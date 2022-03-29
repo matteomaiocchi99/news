@@ -1,0 +1,10 @@
+RewriteEngine on
+# For Backend
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} ^/admin
+RewriteRule ^admin(/.+)?$ /backend/web/$1 [L,PT]
+# For Frontend
+#RewriteCond %{REQUEST_URI} !index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ /frontend/web/$1
