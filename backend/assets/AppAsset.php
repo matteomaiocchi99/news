@@ -19,7 +19,9 @@ class AppAsset extends AssetBundle
         'ampleadmin-minimal/css/animate.css',
         'ampleadmin-minimal/css/style.css',
         'ampleadmin-minimal/css/colors/blue.css',
-        'plugins/bower_components/summernote/dist/summernote.css',
+        'plugins/bower_components/switchery/dist/switchery.min.css',
+        'https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css',
+        /*'plugins/bower_components/summernote/dist/summernote.css',*/
         'css/site.css',
     ];
     public $js = [
@@ -31,8 +33,9 @@ class AppAsset extends AssetBundle
         'plugins/bower_components/toast-master/js/jquery.toast.js',
         'plugins/bower_components/switchery/dist/switchery.min.js',
         'plugins/bower_components/styleswitcher/jQuery.style.switcher.js',
-        'plugins/bower_components/summernote/dist/summernote.min.js',
-        'js/script.js',
+        'https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js',
+/*        'plugins/bower_components/summernote/dist/summernote.min.js',*/
+        'js/script.js?v=3',
     ];
     public $depends = [
         'yii\web\YiiAsset',

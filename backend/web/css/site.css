@@ -88,3 +88,11 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.login-register {
+    background: url(../img/banner-home.jpeg) !important;
+}
+
+.switch-padding{
+    padding-top: 25px;
+}

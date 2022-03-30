@@ -1,53 +1,68 @@
 <?php
 
 /** @var yii\web\View $this */
+/** @var $model \backend\forms\LoginForm */
+/** @var $error string */
 
-$this->title = 'My Yii Application';
+use yii\widgets\ActiveForm;
+
+$this->title = 'Login';
 ?>
-<div class="site-index">
+<?php
+$form = ActiveForm::begin([
+    "options" => [
+        "class" => "form-horizontal form-material"
+    ]
+])
+?><!--
+    <a href="javascript:void(0)" class="text-center db">
+    <img src="https://www.dieffe.tech/wp-content/themes/dieffetech2020/assets/images/logo.png" alt="Home" />
+    <br/>-->
 
-    <div class="jumbotron text-center bg-transparent">
-        <h1 class="display-4">Congratulations!</h1>
+    <!-- Preloader -->
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
+<form class="form-horizontal form-material" id="loginform" action="">
+    <a href="https://www.dieffetech.it" class="text-center db" target="_blank">
+        <img src="https://www.dieffe.tech/wp-content/themes/dieffetech2020/assets/images/logo.png" alt="Home" /><br/>
+    </a>
+
+    <div style="margin-top: 50px; padding: 0 20px;" >
+        <?= $form->field($model, "username")->textInput(["placeholder"=>"Username"])->label(false); ?>
+
+        <?= $form->field($model, "password")->passwordInput(["placeholder"=>"Password"])->label(false); ?>
     </div>
 
-    <div class="body-content">
+    <?php
+    if (!empty($error)) {?>
 
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
+        <div class="alert alert-danger"><?= $error ?></div>
 
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
+    <?php } ?>
 
-                <p><a class="btn btn-outline-secondary" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-outline-secondary" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
+    <div class="form-group text-center m-t-20">
+        <div class="col-xs-12">
+            <button class="btn btn-info btn-lg btn-block text-uppercase waves-effect waves-light" type="submit">Log In</button>
         </div>
-
     </div>
-</div>
+
+</form>
+
+
+
+
+
+
+
+    <!--<div class="form-group">
+        <div class="col-md-12">
+            <div class="checkbox checkbox-primary pull-left p-t-0">
+                <input id="checkbox-signup" type="checkbox">
+                <label for="checkbox-signup"> Remember me </label>
+            </div>
+            <a href="javascript:void(0)" id="to-recover" class="text-dark pull-right"><i class="fa fa-lock m-r-5"></i> Forgot pwd?</a> </div>
+    </div>-->
+
+
+<?php
+ActiveForm::end();

@@ -4,7 +4,11 @@
 /** @var string $content */
 
 use backend\assets\AppAsset;
-use yii\helpers\Html;
+use common\widgets\Alert;
+use yii\bootstrap4\Breadcrumbs;
+use yii\bootstrap4\Html;
+use yii\bootstrap4\Nav;
+use yii\bootstrap4\NavBar;
 
 AppAsset::register($this);
 ?>
@@ -21,13 +25,20 @@ AppAsset::register($this);
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
 
-<main role="main">
-    <div class="container">
+<div class="preloader">
+    <div class="cssload-speeding-wheel"></div>
+</div>
+
+<section id="wrapper" class="login-register">
+    <div class="login-box login-sidebar">
+        <div class="white-box">
         <?= $content ?>
+        </div>
     </div>
-</main>
+</section>
+
 
 <?php $this->endBody() ?>
 </body>
 </html>
-<?php $this->endPage();
+<?php $this->endPage() ?>

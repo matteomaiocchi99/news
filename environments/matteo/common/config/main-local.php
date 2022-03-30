@@ -9,6 +9,10 @@ return [
             'password' => 'root',
             'charset' => 'utf8',
         ],
+        'user' => [
+            'identityClass' => 'backend\models\Users',
+            'enableAutoLogin' => true,
+        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             // send all mails to a file by default. You have to set

@@ -2,12 +2,13 @@
 
 namespace backend\controllers;
 
-use common\models\LoginForm;
+use backend\models\LoginForm;
 use Yii;
-use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use yii\filters\VerbFilter;
+use backend\models\ContactForm;
 
 /**
  * Site controller
@@ -22,22 +23,13 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
+                'only' => ['logout'],
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
                 ],
             ],
         ];
@@ -62,33 +54,30 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
-    }
+        $model = new \backend\forms\LoginForm();
+        $error = null;
 
-    /**
-     * Login action.
-     *
-     * @return string|Response
-     */
-    public function actionLogin()
-    {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->Post())) {
+            $result = $model->login();
+
+            if ($result["success"]) {
+
+                return $this->redirect(["news/index"]);
+            }
+
+            $model->password = "";
+            $error = $result["message"];
         }
 
-        $this->layout = 'blank';
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-
-        return $this->render('login', [
-            'model' => $model,
+        $this->layout = "login";
+        return $this->render('index', [
+            "model" => $model,
+            "error" => $error,
         ]);
     }
+
+
+
 
     /**
      * Logout action.
