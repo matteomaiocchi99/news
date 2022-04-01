@@ -6,6 +6,8 @@ namespace backend\controllers;
 use backend\models\News;
 use backend\models\NewsSearch;
 use backend\models\Users;
+use eMail;
+use phpDocumentor\Reflection\Types\This;
 use yii\bootstrap\Modal;
 use yii\debug\models\search\Debug;
 use yii\filters\AccessControl;
@@ -53,6 +55,7 @@ class NewsController extends Controller
         $searchModel = new NewsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -72,6 +75,8 @@ class NewsController extends Controller
         ]);
     }
 
+
+
     /**
      * Creates a new News model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -83,7 +88,6 @@ class NewsController extends Controller
 
         $model->statusidfk = News::WAITING_APPROVAL;
         $model->writeridfk = $_SESSION["user"];
-        $model->supvisoridfk = 1;
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->prepareToSave() && $model->save() ) {
@@ -93,33 +97,20 @@ class NewsController extends Controller
                     $model->uploadImage();
                 }
 
-                //TODO USA GETALL
-                $resps = Users::selectAllResp();
-
-                //TODO HAI GIà L'UTENTE IN YII $APP
-                $user = Users::findIdentity($_SESSION["user"]);
-                //$name_user = Yii::$app->user->identity->name." ".Yii::$app->user->identity->surname;
-
-                foreach ($resps as $resp) {
-                    $receiver = $resp['email'];
-                    $subject = 'Richiesta di approvazione da parte di '.$user->name." ".$user->surname;
-
-                    //TODO L'UTENTE LO HAI GIA'
-                    $content = "È stata richiesta l'approvazione per la news '".$model->title."' da ".Users::getArrayForSelect()[$model->writeridfk].".";
-                    Users::sendMail($receiver, $subject, $content);
-                }
+                News::createMail($model);
 
                 $model->save();
+
+                $_SESSION["success"] = "Salvataggio avvenuto con successo";
 
                 if (!empty($_POST["save-add"])) {
                     return $this->redirect(["create"]);
                 }
 
-                //TODO FLASH, METTERLO PRIMA DI SAVE ADD E AGGIUNGERE IL TASTO NEL FORM
                 //Yii::$app->session->setFlash("success","Salvataggio avvenuto con successo");
                 //Yii::$app->session->getFlash("success");
 
-                $_SESSION["success"] = "Salvataggio avvenuto con successo";
+
 
                 return $this->redirect(['view', 'newsid' => $model->newsid]);
             }
@@ -160,26 +151,17 @@ class NewsController extends Controller
                     $model->image = $old_img;
                 }
 
-                //TODO METTERE L'INVIO EMAIL IN UNA FUNZIONE CHE RICHIAMI SIA IN CREATE CHE IN UPDATE
-                $resps = Users::selectAllResp();
-
-                $user = Users::findIdentity($_SESSION["user"]);
-
-                foreach ($resps as $resp) {
-                    $receiver = $resp['email'];
-                    $subject = 'Richiesta di approvazione da parte di '.$user->name." ".$user->surname;
-                    $content = "È stata richiesta l'approvazione per la news '".$model->title."' da ".Users::getArrayForSelect()[$model->writeridfk].".";
-                    Users::sendMail($receiver, $subject, $content);
-                }
-
+                News::createMail($model);
 
                 $model->save();
+
+                $_SESSION["success"] = "Salvataggio avvenuto con successo";
 
                 if (!empty($_POST["save-add"])) {
                     return $this->redirect(["create"]);
                 }
 
-                $_SESSION["success"] = "Salvataggio avvenuto con successo";
+
 
                 return $this->redirect(['view', 'newsid' => $model->newsid]);
             }
@@ -187,7 +169,7 @@ class NewsController extends Controller
 
 
 
-        return $this->render('create', [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }
@@ -214,11 +196,12 @@ class NewsController extends Controller
         $model->supvisoridfk = $_SESSION['user'];
 
 
-        $receiver = Users::getArrayForSelect()[$model->writeridfk];
+        $receiver = Users::getAll(['searchWriter' => $model->writeridfk])[0]->email;
         $subject = "La tua news è stata pubblicata!";
         $content = "La tua news '".$model->title."' è stata pubblicata da ".Users::getArrayForSelect()[$model->supvisoridfk];
 
-        Users::sendMail($receiver, $subject, $content);
+        eMail::sendMail($receiver, $subject, $content);
+
 
         $model->save();
         $this->redirect(['view', 'newsid' => $newsid]);
@@ -229,12 +212,12 @@ class NewsController extends Controller
         $model = $this->findModel($newsid);
         $model->statusidfk = 1;
 
-        $receiver = Users::getArrayForSelect()[$model->writeridfk];
+        $receiver = Users::getAll(['searchWriter' => $model->writeridfk])[0]->email;
         $subject = "La tua news è stata rifiutata.";
-        $content = "La tua news è stata rifiutata da ".Users::getArrayForSelect()[$model->supvisoridfk];
+        $content = "La tua news è stata rifiutata da ".Yii::$app->user->identity->email;
         $content .= '<br>'."Apporta le modifiche consigliate e chiedi nuovamente l'approvazione: ".'<br><br>'.$_POST['RejectForm']['reject_motive'];
 
-        Users::sendMail($receiver, $subject, $content);
+        eMail::sendMail($receiver, $subject, $content);
 
         $model->save();
         $this->redirect(['view', 'newsid' => $newsid]);

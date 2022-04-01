@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use http\Params;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
@@ -26,6 +27,11 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
     public $auth_key;
     public $password;
     public $conferma_passwd;
+
+    public $roleName;
+
+    const USER_ACTIVE = 1;
+    const USER_NOT_ACTIVE = 0;
 
     /**
      * {@inheritdoc}
@@ -151,19 +157,9 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         $_SESSION["role_name"] = $role->name;
     }
 
-    public static function sendMail($receiver,$subject, $content)
-    {
 
 
-        Yii::$app->mailer->compose( null)
-            ->setFrom("provaperinviomail@gmail.com")
-            ->setTo("$receiver")
-            ->setSubject($subject)
-            ->setHtmlBody($content)
-            ->send();
-    }
-
-    public static function selectAllResp()
+    /*public static function selectAllResp()
     {
         $model = Users::find()
             ->select(['name','email'])
@@ -171,7 +167,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
             ->all();
 
         return $model;
-    }
+    }*/
 
     public static function getArrayForSelect() {
         $models = Users::find()->all();
@@ -199,5 +195,63 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         return true;
     }
 
+    public static function getQuery($search = [], $limit = null, $offset = null)
+    {
+        $query = self::find();
+
+        if (!empty($search['dataTables'])) {
+            $query->select([
+               'userid' => 'users.userid',
+                'roleidfk' => 'users.roleidfk',
+                "roleName" => "roles.name"
+            ]);
+
+            $query->innerJoin("roles", "users.roleidfk = roles.roleid");
+        }
+
+        if(!empty($search['searchWriter'])){
+            $query->andWhere([
+               'userid' => $search['searchWriter'],
+            ]);
+        }
+
+        if (!empty($search['email'])) {
+
+            $query->select([
+                'name' => 'users.name',
+                'email' => 'users.email'
+            ]);
+
+            $query->andWhere([
+                'roleidfk' => 2,
+            ]);
+        }
+
+        if (!empty($limit)) {
+            $query->limit($limit);
+        }
+
+        if (!empty($offset)) {
+            $query->offset($offset);
+        }
+
+        return $query;
+    }
+
+    public static function getAll($search = [], $limit = null, $offset = null)
+    {
+        $query = self::getQuery($search, $limit, $offset);
+
+
+
+        return $query->all();
+    }
+
+    public static function getCount($search = [])
+    {
+        $query = self::getQuery($search);
+
+        return $query->count();
+    }
 
 }

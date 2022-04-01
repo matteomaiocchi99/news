@@ -60,9 +60,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter' => false,
             'value' => function($model){
                 return Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'catid' => $model->catid]).
-                    '<br>'.'<br>'.'<br>'.
+                    '<br>'.'<br>'.
                     Html::a('<span class="label label-danger action-size"><i class="fa fa-trash"></i></span>', ['delete', 'catid' => $model->catid]).
-                    '<br>'.'<br>'.'<br>'.
+                    '<br>'.'<br>'.
                     Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'catid' => $model->catid]);
             }
         ]

@@ -21,6 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?php
+
     $gridColumns = [
         [
             'attribute' => 'image',
@@ -28,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => 'Immagine',
             'format' => 'raw',
             'filter' => false,
-            'value' => function($model) {
-                if(!empty($model->image)){
-                    return "<img src='".$model->image."' width='150'>";
+            'value' => function ($model) {
+                if (!empty($model->image)) {
+                    return "<img src='" . $model->image . "' width='150'>";
                 }
                 return "";
             }
@@ -40,10 +41,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => 'Titolo',
             'format' => 'raw',
             'filter' => true,
-            'value' => function($model) {
-                if(!empty($model->title)){
+            'value' => function ($model) {
+                if (!empty($model->title)) {
                     return Html::a($model->title, ['view', 'newsid' => $model->newsid]);
-                }else{
+                } else {
                     return '';
                 }
             }
@@ -53,10 +54,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => 'Breve descrizione',
             'format' => 'raw',
             'filter' => true,
-            'value' => function($model) {
-                if(!empty($model->title)){
+            'value' => function ($model) {
+                if (!empty($model->title)) {
                     return $model->shortdesc;
-                }else{
+                } else {
                     return '';
                 }
             }
@@ -66,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => 'Categoria',
             'format' => 'raw',
             'filter' => true,
-            'value' => function($model) {
+            'value' => function ($model) {
                 /* @var $model News */
                 return $model->catName;
             },
@@ -85,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => 'Data fine pubblicazione',
             'format' => 'raw',
             'filter' => true,
-            'value' => function($model) {
+            'value' => function ($model) {
                 return Util::convertDate($model->date_out);
             },
             'filterType' => GridView::FILTER_DATE,
@@ -104,9 +105,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => 'Stato',
             'format' => 'raw',
             'filter' => true,
-            'value' => function($model) {
-                //TODO USA INNER JOIN
-                return Status::getArrayForSelect()[$model->statusidfk];
+            'value' => function ($model) {
+                /* @var $model News */
+                return $model->statusName;
             },
             'filterType' => Select2::classname(),
             'filterWidgetOptions' => [
@@ -123,17 +124,20 @@ $this->params['breadcrumbs'][] = $this->title;
             'label' => '',
             'format' => 'raw',
             'filter' => false,
-            'value' => function($model){
-                return Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'newsid' => $model->newsid]).
-                    '<br>'.'<br>'.'<br>'.
-                 Html::a('<span class="label label-danger action-size"><i class="fa fa-trash"></i></span>', ['delete', 'newsid' => $model->newsid]).
-                    '<br>'.'<br>'.'<br>'.
-                 Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'newsid' => $model->newsid]);
+            'value' => function ($model) {
+                /* @var $model News */
+                if (((Yii::$app->user->identity->userid == $model->writeridfk & $model->statusidfk <= News::WAITING_APPROVAL & $_SESSION['mask'] < News::ADMIN) || $_SESSION['mask'] >= News::ADMIN)) {
+                    return Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'newsid' => $model->newsid]) .
+                        '<br>' . '<br>' . '<br>' .
+                        Html::a('<span class="label label-danger action-size"><i class="fa fa-trash"></i></span>', ['delete', 'newsid' => $model->newsid]) .
+                        '<br>' . '<br>' . '<br>' .
+                        Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'newsid' => $model->newsid]);
+                    }
+                return Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'newsid' => $model->newsid]);
             }
         ]
     ]
     ?>
-
 
 
     <div class="white-box">
@@ -156,13 +160,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'toggleData' => false,
             'summary' => '<span class="label label-success pull-right"> (totalCount) record trovati </span>',
             'toolbar' => [
-                'content' => '<div class="box-title">'."&nbsp;" . Html::a('<i class="glyphicon glyphicon-plus"></i>', ['/news/create'], ['class' => '', 'title' => 'Aggiungi Utente']).'</div>'
+                'content' => '<div class="box-title">' . "&nbsp;" . Html::a('<i class="glyphicon glyphicon-plus"></i>', ['/news/create'], ['class' => '', 'title' => 'Aggiungi Utente']) . '</div>'
             ]
         ]);
         ?>
     </div>
-
-
 
 
 </div>

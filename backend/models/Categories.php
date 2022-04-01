@@ -61,7 +61,9 @@ class Categories extends \yii\db\ActiveRecord
     }
 
     public static function getArrayForSelect() {
-        $models = Categories::find()->all();
+        /*$models = Categories::find()->all();*/
+
+        $models = Categories::getAll(['order' => "'catname' => SORT_ASC"]);
 
         return ArrayHelper::map($models, 'catid', 'catname');
     }
@@ -87,5 +89,39 @@ class Categories extends \yii\db\ActiveRecord
 
     }
 
+    public static function getQuery($search = [], $limit = null, $offset = null)
+    {
+        $query = self::find();
 
+        if (!empty($limit)) {
+            $query->limit($limit);
+        }
+
+        if (!empty($offset)) {
+            $query->offset($offset);
+        }
+
+        return $query;
+    }
+
+    public static function getAll($search = [], $limit = null, $offset = null)
+    {
+        $query = self::getQuery($search, $limit, $offset);
+
+        if (!empty($search['order'])) {
+            $query->orderBy([
+                'catname' => SORT_ASC,
+            ]);
+        }
+
+        return $query->all();
+    }
+
+    public static function getCount($search = [])
+    {
+        $query = self::getQuery($search);
+
+        return $query->count();
+    }
 }
+

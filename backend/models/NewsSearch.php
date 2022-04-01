@@ -2,9 +2,9 @@
 
 namespace backend\models;
 
+use backend\models\News;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\News;
 
 /**
  * NewsSearch represents the model behind the search form of `app\models\News`.
@@ -42,10 +42,6 @@ class NewsSearch extends News
     {
         $query = News::find();
 
-        /*if ($_SESSION['mask']=News::WRITER) {
-            $query->andWhere(['statusidfk' => News::STATUS_PUBLIC] or ['writeridfk' => $_SESSION['user']]);
-        }*/
-
 
         // add conditions that should always apply here
 
@@ -55,10 +51,38 @@ class NewsSearch extends News
 
         $this->load($params);
 
+        if ($_SESSION['mask']==News::WRITER) {
+            $query->orWhere([
+                'statusidfk' => News::STATUS_PUBLIC,
+            ]);
+            $query->orWhere([
+                'writeridfk' => $_SESSION['user'],
+            ]);
+        }
+
+        if ($_SESSION['mask']==News::RESPONSIBLE) {
+            $query->orWhere([
+                'statusidfk' => News::WAITING_APPROVAL,
+            ]);
+            $query->orWhere([
+                'statusidfk' => News::STATUS_PUBLIC,
+            ]);
+            $query->orWhere([
+                'writeridfk' => $_SESSION['user'],
+            ]);
+        }
+
+        $query->orderBy([
+           "date_in" => SORT_DESC,
+        ]);
+
         $query->select([
             "news.*",
-            "catName" => "categories.catname"
+            "catName" => "categories.catname",
+            "statusName" => "status.statusname"
         ]);
+
+        $query->innerJoin("status", "news.statusidfk = status.statusid");
 
         $query->innerJoin("categories","news.catidfk = categories.catid");
 

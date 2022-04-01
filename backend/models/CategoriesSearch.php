@@ -56,6 +56,10 @@ class CategoriesSearch extends Categories
             return $dataProvider;
         }
 
+        $query->orderBy([
+            "catname" => SORT_ASC,
+        ]);
+
         // grid filtering conditions
         $query->andFilterWhere([
             'catid' => $this->catid,
@@ -67,3 +71,4 @@ class CategoriesSearch extends Categories
         return $dataProvider;
     }
 }
+

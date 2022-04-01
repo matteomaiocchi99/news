@@ -88,6 +88,10 @@ class CategoriesController extends Controller
 
                 $_SESSION["success"] = "Salvataggio avvenuto con successo";
 
+                if (!empty($_POST["save-add"])) {
+                    return $this->redirect(["create"]);
+                }
+
                 return $this->redirect(['view', 'catid' => $model->catid]);
             }
         } else {
@@ -127,6 +131,10 @@ class CategoriesController extends Controller
                 $model->save();
 
                 $_SESSION["success"] = "Salvataggio avvenuto con successo";
+
+                if (!empty($_POST["save-add"])) {
+                    return $this->redirect(["create"]);
+                }
 
                 return $this->redirect(['view', 'catid' => $model->catid]);
             }

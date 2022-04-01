@@ -1,5 +1,6 @@
 <?php
 
+use backend\controllers\UsersController;
 use backend\models\News;
 use backend\models\Roles;
 use backend\models\Users;
@@ -18,13 +19,58 @@ $this->title = 'Users';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="users-index" style="margin: 30px 30px">
+    <table class="table_blur" id="dataTable">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Cognome</th>
+                <th>E-mail</th>
+                <th>Ruolo</th>
+                <th>Stato</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+        $results = Users::getAll(['dataTables' => 1]);
+        $i = 0;
+        /* @var $model Users */
 
+        foreach ($results as $result) { ?>
+            <?php $model = Users::findIdentity($result['userid'])?>
+                <tr>
+                    <td><?= Users::findIdentity($result['userid'])->name ?></td>
+                    <td><?= Users::findIdentity($result['userid'])->surname ?></td>
+                    <td><?= Users::findIdentity($result['userid'])->email ?></td>
+                    <td><?= $result->roleName  ?></td>
+                    <td><?= (Users::findIdentity($result['userid'])->status === Users::USER_ACTIVE) ? 'Attivo' : 'Non attivo' ?></td>
+                    <td><?php
+                        if ($model->status === Users::USER_ACTIVE) {
+                            echo Html::a('<span class="label label-danger action-size"><i class="fa fa-trash"></i></span>', ['delete', 'userid' => $model->userid]).
+                            Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'userid' => $model->userid]).
+                            Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'userid' => $model->userid]);
+                        } else {
+                            echo Html::a('<span class="label label-warning action-size"><i class="fa fa-check-circle"></i></span>', ['reactive', 'userid' => $model->userid]).
+                            Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'userid' => $model->userid]).
+                            Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'userid' => $model->userid]);
+                        }
+                        ?>
+                    </td>
+                </tr>
 
+        <?php }
+        ?>
+        </tbody>
+    </table>
+
+    <div class="box-title">&nbsp;<?= "<br>".Html::a('<span class="btn btn-success">Aggiungi un nuovo utente
+        </span>', ['/users/create'], ['class' => '', 'title' => 'Aggiungi Utente']) ?>
+    </div>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?php
-    $gridColumns = [
+   <!-- <?php
+/*    $gridColumns = [
         [
             'attribute' => 'name',
             'label' => 'Nome',
@@ -70,7 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => 'raw',
             'filter' => true,
             'value' => function($model) {
-                return Roles::getArrayForSelect()[$model->roleidfk];
+                return $model->roleName;
             },
             'filterType' => Select2::classname(),
             'filterWidgetOptions' => [
@@ -106,21 +152,22 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => 'raw',
             'filter' => false,
             'value' => function($model){
-                return Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'userid' => $model->userid]).
-                    '<br>'.'<br>'.'<br>'.
-                    /*Html::a('<span class="label label-danger action-size"><i class="fa fa-trash"></i></span>', ['delete', 'userid' => $model->userid]).*/
-                    '<br>'.'<br>'.'<br>'.
+                return ($model->status === Users::USER_ACTIVE) ? Html::a('<span class="label label-danger action-size"><i class="fa fa-trash"></i></span>', ['delete', 'userid' => $model->userid]).
+                    Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'userid' => $model->userid]).
+                    Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'userid' => $model->userid]) :
+                    Html::a('<span class="label label-warning action-size"><i class="fa fa-check-circle"></i></span>', ['reactive', 'userid' => $model->userid]).
+                    Html::a('<span class="label label-info action-size"><i class="fa fa-pencil"></i></span>', ['update', 'userid' => $model->userid]).
                     Html::a('<span class="label label-success action-size"><i class="fa fa-eye"></i></span>', ['view', 'userid' => $model->userid]);
             }
         ]
     ]
-    ?>
+    */?>
 
 
 
     <div class="white-box">
         <?php
-        echo GridView::widget([
+/*        echo GridView::widget([
             'dataProvider' => $dataProvider, //quello che contiene la query, la paginazione, ecc... così la gridView crea la tabella e la paginazione sotto
             'filterModel' => $searchModel,
             'columns' => $gridColumns,
@@ -141,8 +188,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'content' => '<div class="box-title">'."&nbsp;" . Html::a('<i class="glyphicon glyphicon-plus"></i>', ['/users/create'], ['class' => '', 'title' => 'Aggiungi Utente']).'</div>'
             ]
         ]);
-        ?>
+        */?>
     </div>
+</div>-->
 
-
-</div>
+<script>
+    $(document).ready(function () {
+       $('#dataTable').DataTable({
+          /* "processing": true,
+           "serverSide": true,
+           "ajax": "<?= Url::to(["users/search"]) ?>"*/
+       })
+    });
+</script>

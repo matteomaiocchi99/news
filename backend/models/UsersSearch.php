@@ -56,6 +56,21 @@ class UsersSearch extends Users
             return $dataProvider;
         }
 
+
+        $query->orderBy([
+           "roleidfk" => SORT_ASC
+        ]);
+        $query->addOrderBy([
+            "surname" => SORT_ASC,
+        ]);
+
+        $query->select([
+           "users.*",
+           "roleName" => "roles.name"
+        ]);
+
+        $query->innerJoin("roles", "users.roleidfk = roles.roleid");
+
         // grid filtering conditions
         $query->andFilterWhere([
             'userid' => $this->userid,

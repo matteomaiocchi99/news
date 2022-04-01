@@ -4,7 +4,9 @@ namespace backend\models;
 
 use backend\util\Image;
 use backend\util\Util;
+use eMail;
 use Yii;
+use yii\debug\models\search\Mail;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -37,6 +39,7 @@ class News extends \yii\db\ActiveRecord
     const WRITER = 50;
 
     public $catName;
+    public $statusName;
 
     /**
      * {@inheritdoc}
@@ -52,7 +55,7 @@ class News extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['title', 'shortdesc', 'longdesc', 'catidfk', 'date_in', 'statusidfk', 'writeridfk', 'supvisoridfk'], 'required'],
+            [['title', 'shortdesc', 'longdesc', 'catidfk', 'date_in', 'statusidfk', 'writeridfk'], 'required'],
             [["image"],"required","on"=>"insert"],
             [['shortdesc', 'longdesc'], 'string'],
             [['catidfk', 'writeridfk', 'supvisoridfk', 'statusidfk'], 'integer'],
@@ -146,6 +149,21 @@ class News extends \yii\db\ActiveRecord
 
         return true;
 
+    }
+
+    public static function createMail($model)
+    {
+        $resps = Users::getAll(['email' => 1]);
+
+        $name_user = Yii::$app->user->identity->name." ".Yii::$app->user->identity->surname;
+
+        foreach ($resps as $resp) {
+            $receiver = $resp['email'];
+            $subject = 'Richiesta di approvazione da parte di '.$name_user;
+            $content = "È stata richiesta l'approvazione per la news '".$model->title."' da ".$name_user.".";
+
+            eMail::sendMail($receiver, $subject, $content);
+        }
     }
 
 }

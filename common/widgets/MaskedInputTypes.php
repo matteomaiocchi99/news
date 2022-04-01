@@ -4,6 +4,7 @@ namespace common\widgets;
 
 use common\util\ArrayUtil;
 use Yii;
+use yii\web\NotFoundHttpException;
 use yii\widgets\MaskedInput;
 
 /**
@@ -88,9 +89,20 @@ class MaskedInputTypes extends MaskedInput
 
 		unset($config["type"]);
 
-		$config_final = ArrayUtil::array_merge_recursive($config_final, $config);
+		$config_final = self::array_merge_recursive($config_final, $config);
 
 
 		return parent::widget($config_final);
 	}
+
+    public static function array_merge_recursive($paArray1, $paArray2)
+    {
+        if (!is_array($paArray1) or !is_array($paArray2)) {
+            return $paArray2;
+        }
+        foreach ($paArray2 as $sKey2 => $sValue2) {
+            $paArray1[$sKey2] = self::array_merge_recursive(@$paArray1[$sKey2], $sValue2);
+        }
+        return $paArray1;
+    }
 }

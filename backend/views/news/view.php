@@ -66,123 +66,130 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td> <?= Users::getArrayForSelect()[$model->supvisoridfk] ?>  </td>
                                     </tr>
                                 <?php } ?>
+                                <tr>
+                                    <td><b></b></td>
+                                    <td>  </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="news-view"  style="margin-top: 30px">
+                <div style="display: flex; justify-content:space-between">
+                    <div>
+                        <?php
+                        if($model->statusidfk===2 & $_SESSION["mask"]>=News::RESPONSIBLE) { ?>
+
+                            <?= Html::Button('Approva', ['class' => 'btn btn-success','id'=>'approve', 'style'=>'width: 100px']) ?>
+                            <?= Html::Button('Rifiuta', ['class' => 'btn btn-warning', 'id'=>'reject', 'style'=>'width: 100px']) ?>
+
+                            <?php
+                        }?>
+                        <?php
+                        if (Yii::$app->user->identity->userid === $model->writeridfk & $model->statusidfk<= News::WAITING_APPROVAL) { ?>
+                            <?= Html::a('Modifica', ['update', 'newsid' => $model->newsid], ['class' => 'btn btn-primary', 'style'=>'width: 100px']) ?>
+
+                            <?php
+
+                            if ($_SESSION["mask"] < News::ADMIN) { ?>
+                                <?= Html::a('Rimuovi', ['delete', 'newsid' => $model->newsid], [
+                                    'class' => 'btn btn-danger',
+                                    'style' => 'width: 100px',
+                                    'data' => [
+                                        'confirm' => 'Sei sicuro di voler cancellare questo elemento?',
+                                        'method' => 'post',
+                                    ],
+                                ]);
+                            }
+                            ?>
+                        <?php } ?>
+                        <?php if ($_SESSION["mask"]>=News::ADMIN) { ?>
+                            <?= Html::a('Rimuovi', ['delete', 'newsid' => $model->newsid], [
+                                'class' => 'btn btn-danger',
+                                'style'=>'width: 100px',
+                                'data' => [
+                                    'confirm' => 'Sei sicuro di voler cancellare questo elemento?',
+                                    'method' => 'post',
+                                ],
+                            ]) ?>
+                            <?php
+                        }
+                        ?>
+
+                    </div>
+                    <div>
+                        <?= Html::a('Torna indietro', Yii::$app->request->referrer, ['class' => 'btn btn-default']) ?>
+                    </div>
+                </div>
+
+                <!-----Begin Approve Form----->
+                <?php
+                Modal::begin([
+                    'header' => '',
+                    'id' => 'modal-approve',
+                    'size' => 'modal-lg',
+                ]);
+
+                ?>
+                <div style="text-align: center">
+                    <h3>Sei sicuro di voler approvare questa news?</h3>
+
+                    <?= Html::a('Approva e pubblica', ['approve', 'newsid' => $model->newsid], [
+                        'class' => 'btn-lg btn btn-success',
+                        'style'=>'margin-top: 30px; padding: 20x'
+                    ]) ?>
+                    <!--<button class="btn btn-success" style="margin-top: 30px">Approva e pubblica questa news</button>-->
+
+                </div>
+
+                <?php
+                Modal::end();
+                ?>
+                <!-----End Approve Form----->
+
+                <!-----Begin Reject Form----->
+                <?php
+                Modal::begin([
+                    'header' => '',
+                    'id' => 'modal-reject',
+                    'size' => 'modal-lg',
+                ]);
+
+                ?>
+
+                <?php
+                $modelForm = new \backend\forms\RejectForm();
+                $form = ActiveForm::begin([
+                    'id' => 'form-reject',
+                    'action' => \yii\helpers\Url::to(['reject','newsid' => $model->newsid])
+                ]);
+                ?>
+                <?= $form->field($modelForm,'reject_motive')->textarea(['class' => 'summernote-no-image']) ?>
+                <input type="submit">
+                <?php
+                ActiveForm::end();
+                ?>
+                <?php
+                Modal::end();
+                ?>
+                <!-----End Reject Form----->
+
+
+                <!-- Page Content -->
+                <!-- ============================================================== -->
+                <!-- /.col-lg-12 -->
+            </div>
         </div>
     </div>
+
 </div>
     <!-- ============================================================== -->
     <!-- End Page Content -->
     <!-- ============================================================== -->
 
-<div class="news-view" >
 
-    <div style="display: flex; justify-content:space-between">
-        <div>
-            <?php
-
-            if ($_SESSION["user"] === $model->writeridfk & $model->statusidfk<= News::WAITING_APPROVAL) { ?>
-
-                <?= Html::a('Update', ['update', 'newsid' => $model->newsid], ['class' => 'btn btn-primary', 'style'=>'width: 100px']) ?>
-                <?= Html::a('Delete', ['delete', 'newsid' => $model->newsid], [
-                    'class' => 'btn btn-danger',
-                    'style'=>'width: 100px',
-                    'data' => [
-                        'confirm' => 'Are you sure you want to delete this item?',
-                        'method' => 'post',
-                    ],
-                ]) ?>
-
-            <?php } ?>
-            <?php
-            if($model->statusidfk===2 & $_SESSION["mask"]>=News::RESPONSIBLE) { ?>
-
-                <?= Html::Button('Approva', ['class' => 'btn btn-success','id'=>'approve', 'style'=>'width: 100px']) ?>
-                <?= Html::Button('Rifiuta', ['class' => 'btn btn-warning', 'id'=>'reject', 'style'=>'width: 100px']) ?>
-
-                <?php
-            }
-            if ($model->statusidfk===3 & $_SESSION["mask"]>=News::ADMIN) { ?>
-                <?= Html::a('Delete', ['delete', 'newsid' => $model->newsid], [
-                    'class' => 'btn btn-danger',
-                    'style'=>'width: 100px',
-                    'data' => [
-                        'confirm' => 'Are you sure you want to delete this item?',
-                        'method' => 'post',
-                    ],
-                ]) ?>
-                <?php
-            }
-            ?>
-
-        </div>
-        <div>
-            <?= Html::a('Torna indietro', Yii::$app->request->referrer, ['class' => 'btn btn-default']) ?>
-        </div>
-    </div>
-
-
-    <!-----Begin Approve Form----->
-    <?php
-    Modal::begin([
-        'header' => '',
-        'id' => 'modal-approve',
-        'size' => 'modal-lg',
-    ]);
-
-    ?>
-    <div style="text-align: center">
-        <h3>Sei sicuro di voler approvare questa news?</h3>
-
-        <?= Html::a('Approva e pubblica', ['approve', 'newsid' => $model->newsid], [
-            'class' => 'btn-lg btn btn-success',
-            'style'=>'margin-top: 30px; padding: 20x'
-        ]) ?>
-        <!--<button class="btn btn-success" style="margin-top: 30px">Approva e pubblica questa news</button>-->
-
-    </div>
-
-    <?php
-    Modal::end();
-    ?>
-    <!-----End Approve Form----->
-
-    <!-----Begin Reject Form----->
-    <?php
-    Modal::begin([
-        'header' => '',
-        'id' => 'modal-reject',
-        'size' => 'modal-lg',
-    ]);
-
-    ?>
-
-    <?php
-        $modelForm = new \backend\forms\RejectForm();
-        $form = ActiveForm::begin([
-            'id' => 'form-reject',
-            'action' => \yii\helpers\Url::to(['reject','newsid' => $model->newsid])
-        ]);
-    ?>
-    <?= $form->field($modelForm,'reject_motive')->textarea(['class' => 'summernote-no-image']) ?>
-    <input type="submit">
-    <?php
-        ActiveForm::end();
-    ?>
-    <?php
-    Modal::end();
-    ?>
-    <!-----End Reject Form----->
-
-
-    <!-- Page Content -->
-    <!-- ============================================================== -->
-    <!-- /.col-lg-12 -->
-</div>
 
 
 <script>

@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Users */
 
-$this->title = 'Update Users: ' . $model->name;
+$this->title = 'Modifica utente: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'userid' => $model->userid]];
 $this->params['breadcrumbs'][] = 'Update';

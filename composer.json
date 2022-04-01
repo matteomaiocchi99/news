@@ -27,7 +27,9 @@
         "kartik-v/yii2-widget-activeform": "dev-master",
         "2amigos/qrcode-library": "^2.0",
         "vilochane/yii2-barcode-generator": "dev-master",
-        "odaialali/yii2-qrcode-reader": "@dev"
+        "odaialali/yii2-qrcode-reader": "@dev",
+        "ext-json": "*",
+        "ext-mysqli": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

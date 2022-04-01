@@ -36,6 +36,20 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'assetManager' => [
+            'class' => 'yii\web\AssetManager',
+            'appendTimestamp' => true, //Включаем поддержку версионности
+            'bundles' => [
+                'yii\web\JqueryAsset' => [
+                    'sourcePath' => null,   // do not publish the bundle
+                    'js' => [
+                        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js',
+                    ],
+                    'jsOptions' => [ 'position' => \yii\web\View::POS_HEAD ],
+                ],
+            ],
+            'linkAssets' => false, //генерация прямых ссылок на файлы, без копирование ресурсов
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,

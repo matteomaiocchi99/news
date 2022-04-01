@@ -4,11 +4,14 @@ namespace backend\controllers;
 
 use backend\models\Users;
 use backend\models\UsersSearch;
+use mysql_xdevapi\Result;
 use Yii;
+use yii\debug\models\timeline\Search;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Response;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -25,13 +28,13 @@ class UsersController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'validate'],
+                        'actions' => ['index', 'create', 'update', 'delete', 'view', 'validate', 'reactive', 'search'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
                 //Callback ci dice cosa fare se queste regole falliscono
-                'denyCallback' => function($rule, $data) {
+                'denyCallback' => function ($rule, $data) {
                     $this->redirect(['/site/index']);
                 }
             ],
@@ -48,10 +51,12 @@ class UsersController extends Controller
         $searchModel = new UsersSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+
     }
 
     /**
@@ -82,6 +87,9 @@ class UsersController extends Controller
 
             $_SESSION['success'] = 'Salvataggio avvenuto con successo';
 
+            if (!empty($_POST["save-add"])) {
+                return $this->redirect(["create"]);
+            }
 
             return $this->redirect(['view', 'userid' => $model->userid]);
         }
@@ -109,13 +117,16 @@ class UsersController extends Controller
 
             $_SESSION['success'] = 'Modifica avvenuto con successo';
 
+            if (!empty($_POST["save-add"])) {
+                return $this->redirect(["create"]);
+            }
 
             return $this->redirect(['view', 'userid' => $model->userid]);
         }
 
         $model->passwd = '';
 
-        return $this->render('create', [
+        return $this->render('update', [
             'model' => $model,
         ]);
     }
@@ -129,9 +140,50 @@ class UsersController extends Controller
      */
     public function actionDelete($userid)
     {
-        $this->findModel($userid)->delete();
+        $model = $this->findModel($userid);
+        $model['status'] = 0;
+
+        if ($model->passwordToMd5($model->userid) && $model->save()) { //qui salviamo tutto quello che ci arriva nel $model
+            $model->save();
+            $_SESSION['success'] = 'Utente disattivato';
+            return $this->redirect(['view', 'userid' => $model->userid]);
+        }
 
         return $this->redirect(['index']);
+    }
+
+    public function actionReactive($userid)
+    {
+        $model = $this->findModel($userid);
+        $model['status'] = 1;
+
+        if ($model->passwordToMd5($model->userid) && $model->save()) { //qui salviamo tutto quello che ci arriva nel $model
+            $model->save();
+            $_SESSION['success'] = 'Utente attivato';
+            return $this->redirect(['view', 'userid' => $model->userid]);
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    public function actionSearch()
+    {
+
+        //Yii::$app->response->format = Response::FORMAT_JSON;
+        /*$results = Users::getAll(['dataTables' => 1]);
+        $i = 0;
+
+        foreach ($results as $result) {
+            $array[$i] =
+                    [
+                        $this->findModel($result)->name,
+                        $this->findModel($result)->surname,
+                        $this->findModel($result)->email,
+                        $this->findModel($result)->roleidfk,
+                        $this->findModel($result)->status,
+            ];
+            $i++;
+        }*/
     }
 
     /**

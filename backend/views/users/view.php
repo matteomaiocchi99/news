@@ -46,10 +46,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                         <td><b>Stato</b></td>
                                         <td> <?= ($model->status===1) ? 'attivo' : 'non attivo' ?> </td>
                                     </tr>
+                                    <tr>
+                                        <td><b></b></td>
+                                        <td>  </td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
-                            <div style="display: flex; justify-content:space-between; margin-top: 50px">
+                            <div style="display: flex; justify-content:space-between; margin-top: 30px">
                                 <div>
                                     <?= Html::a('Update', ['update', 'userid' => $model->userid], ['class' => 'btn btn-primary']) ?>
                                     <?= Html::a('Delete', ['delete', 'userid' => $model->userid], [
