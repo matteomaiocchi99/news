@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'heading' => false,
                 'footer' => '',
                 'afterOptions' => ['Class' => ''],
-                'before' => '<font size="5px"><b>' . $this->title . '</b></font>',
+                'before' => '<font size="5px"><b>' . 'Categorie' . '<br><br></b></font>',
                 'beforeOptions' => ['class' => 'box-header with-border'],
             ],
             'tableOptions' => ['class' => 'table table-stripped table-hover'],

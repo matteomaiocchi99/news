@@ -55,7 +55,7 @@ use kartik\file\FileInput;
             </div>
 
             <div class="col-sm-12">
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <?= $form->field($model, 'catidfk')->widget(Select2::className(), [
                         "data" => Categories::getArrayForSelect(),
                         "options" => [
@@ -63,20 +63,18 @@ use kartik\file\FileInput;
                         ]
                     ]) ?>
                 </div>
-                <div class="col-sm-4">
+                <!--<div class="col-sm-4">
                     <div class="form-group">
                         <label for="add-cat" style="text-align: center">&nbsp;&nbsp;Aggiungi una categoria</label><br>
-                        <?= Html::a('Aggiungi', Url::to(['categories/create']), [
+                        <?/*= Html::a('Aggiungi', Url::to(['categories/create']), [
                             'class' => 'btn btn-success',
                             'style' => 'width: 50%',
                             'target' => "_blank"
-                        ]) ?>
+                        ]) */?>
                     </div>
 
-
-                </div>
-                <div class="col-sm-4">
-                    <!-- todo usare massked input types in /common/widgets -->
+                </div>-->
+                <div class="col-sm-6">
                     <?= $form->field($model, 'date_out')->widget(\common\widgets\MaskedInputTypes::class, [
                         "type" => \common\widgets\MaskedInputTypes::TYPE_DATE
                     ]) ?>

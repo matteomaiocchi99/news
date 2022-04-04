@@ -167,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]);
                 ?>
                 <?= $form->field($modelForm,'reject_motive')->textarea(['class' => 'summernote-no-image']) ?>
-                <input type="submit">
+                <input type="submit" class="btn btn-lg btn-warning" value="Rifiuta">
                 <?php
                 ActiveForm::end();
                 ?>

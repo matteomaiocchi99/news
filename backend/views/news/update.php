@@ -18,5 +18,5 @@ $this->params['breadcrumbs'][] = 'Update';
         'model' => $model,
     ]) ?>
 
-    <footer class="footer text-center"> <?= date("Y")?> &copy; Dieffetech </footer>
+
 </div>

@@ -96,3 +96,24 @@ a.desc:after {
 .switch-padding{
     padding-top: 25px;
 }
+
+.top-left-part {
+    width: 230px;
+}
+.select2-container{
+    z-index: 99999;
+}
+
+.no-elements-found {
+    margin: 0;
+    border-radius: 3px;
+
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+

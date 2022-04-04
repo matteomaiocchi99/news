@@ -21,11 +21,11 @@ class AppAsset extends AssetBundle
         'ampleadmin-minimal/css/colors/blue.css',
         'plugins/bower_components/switchery/dist/switchery.min.css',
         'https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css',
+        'https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap4.min.css',
         //'https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css',
         /*'plugins/bower_components/summernote/dist/summernote.css',*/
-        'cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css',
+        //'https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css',
         'css/site.css',
-        'css/dataTables.css',
     ];
     public $js = [
         'ampleadmin-minimal/bootstrap/dist/js/bootstrap.min.js',
@@ -38,6 +38,7 @@ class AppAsset extends AssetBundle
         'plugins/bower_components/styleswitcher/jQuery.style.switcher.js',
         'https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js',
         'https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js',
+        'https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap4.min.js',
         /*'plugins/bower_components/summernote/dist/summernote.min.js',*/
         'js/script.js?v=3',
     ];

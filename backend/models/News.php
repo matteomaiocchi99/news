@@ -4,7 +4,7 @@ namespace backend\models;
 
 use backend\util\Image;
 use backend\util\Util;
-use eMail;
+use common\util\eMail;
 use Yii;
 use yii\debug\models\search\Mail;
 use yii\helpers\ArrayHelper;

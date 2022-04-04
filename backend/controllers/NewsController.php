@@ -224,6 +224,8 @@ class NewsController extends Controller
     }
 
 
+
+
     /**
      * Finds the News model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

@@ -43,3 +43,6 @@ phpunit.phar
 /backend/web/robots.txt
 /backend/web/ampleadmin-minimal
 /backend/web/plugins
+/node_modules
+
+/server-processing.php

@@ -148,11 +148,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'columns' => $gridColumns,
             'pjax' => true, //quando cerca, non ricarica tutta la pagina ma solo il contenuto della gridView
             'panel' => [ //Il panel è una cosa grafica; in genere viene sempre messa in questo modo, senza mai modificarla
-                'type' => GridView::TYPE_DEFAULT,
+                'type' => GridView::ROW_EXPANDED,
                 'heading' => false,
                 'footer' => '',
                 'afterOptions' => ['Class' => ''],
-                'before' => '<font size="5px"><b>' . $this->title . '</b></font>',
+                'before' => '<font size="5px"><b>' . $this->title . '<br><br></b></font>',
                 'beforeOptions' => ['class' => 'box-header with-border'],
             ],
             'tableOptions' => ['class' => 'table table-stripped table-hover'],
@@ -160,7 +160,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'toggleData' => false,
             'summary' => '<span class="label label-success pull-right"> (totalCount) record trovati </span>',
             'toolbar' => [
-                'content' => '<div class="box-title">' . "&nbsp;" . Html::a('<i class="glyphicon glyphicon-plus"></i>', ['/news/create'], ['class' => '', 'title' => 'Aggiungi Utente']) . '</div>'
+                'content' => ($_SESSION['mask'] != News::WRITER && $_SESSION['mask']!= News::ADMIN) ? "" : '<div class="box-title">' . "&nbsp;" . Html::a('<i class="glyphicon glyphicon-plus"></i>', ['/news/create'], ['class' => '', 'title' => 'Aggiungi Utente']) . '</div>'
             ]
         ]);
         ?>

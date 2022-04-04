@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use backend\util\Util;
 use http\Params;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -200,13 +201,47 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         $query = self::find();
 
         if (!empty($search['dataTables'])) {
+
             $query->select([
-               'userid' => 'users.userid',
+                'userid' => 'users.userid',
                 'roleidfk' => 'users.roleidfk',
                 "roleName" => "roles.name"
             ]);
 
+
             $query->innerJoin("roles", "users.roleidfk = roles.roleid");
+
+
+            if (!empty($_SESSION['FiltersForms']["status"])){
+                if ($_SESSION['FiltersForms']["status"]===self::USER_ACTIVE) {
+                    $query->andWhere([
+                        'status' =>  $_SESSION['FiltersForms']["status"],
+                    ]);
+                }
+                if ($_SESSION['FiltersForms']["status"]===2) {
+                    $query->andWhere([
+                        'status' =>  Users::USER_NOT_ACTIVE,
+                    ]);
+                }
+            }
+
+            if (!empty($_SESSION['FiltersForms']['name'])) {
+                $query->andWhere("users.name LIKE :name", [":name" => "%".$_SESSION['FiltersForms']['name']."%"]);
+            }
+
+            if (!empty($_SESSION['FiltersForms']['surname'])) {
+                $query->andWhere("users.surname LIKE :surname", [":surname" => "%".$_SESSION['FiltersForms']['surname']."%"]);
+            }
+
+            if (!empty($_SESSION['FiltersForms']['email'])) {
+                $query->andWhere("users.email LIKE :email", [":email" => "%".$_SESSION['FiltersForms']['email']."%"]);
+            }
+
+            if (!empty($_SESSION['FiltersForms']["roleidfk"])){
+                $query->andWhere([
+                    'roleidfk' =>  $_SESSION['FiltersForms']["roleidfk"],
+                ]);
+            }
         }
 
         if(!empty($search['searchWriter'])){
@@ -234,6 +269,7 @@ class Users extends \yii\db\ActiveRecord implements IdentityInterface
         if (!empty($offset)) {
             $query->offset($offset);
         }
+
 
         return $query;
     }

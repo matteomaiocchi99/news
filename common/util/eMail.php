@@ -1,5 +1,9 @@
 <?php
 
+namespace common\util;
+
+use Yii;
+
 class eMail
 {
     public static function sendMail($receiver,$subject, $content)
